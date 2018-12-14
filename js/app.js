@@ -61,6 +61,10 @@ $(function () {
             alert('There appear to be an uneven amount of elements in each input box.')
         } else {
             gradeWeights = strToFloat(gradeWeights);
+            var divide=checkGreaterThanOne(gradeWeights);
+            if(divide){
+                gradeWeights=multiply(gradeWeights,.01);
+            }
             gradeMedians = strToFloat(gradeMedians);
             gradeStDev = strToFloat(gradeStDev);
             updateDistribution(gradeWeights, gradeMedians, gradeStDev);
@@ -78,6 +82,14 @@ $(function () {
         console.log("total_stdev: " + total_stdev);
         calculateValues(total_median, total_stdev);
     }
+    function checkGreaterThanOne(gradeWeights){
+        for(var i=0;i<gradeWeights.length;i++){
+            if(gradeWeights[i]>1){
+                return true;
+            }
+        }
+        return false;
+    }
     function calculateValues(med, stdev) {
         updateGradeThresholds();
         var zScores = [];
@@ -91,16 +103,16 @@ $(function () {
             percentiles[i] = .5 * (1 + erf(zScores[i] * ONE_OVER_ROOT_TWO, 50));
             if (percentiles[i] < 0 || percentiles[i] > 100) percentiles[i] = 0;
         }
-        percentiles=multiplyBy100(percentiles);
+        percentiles=multiply(percentiles);
         // console.log('z');
         // console.log(zScores);
         // console.log('percentiles');
         // console.log(percentiles);
         updateGraph(percentiles);
     }
-    function multiplyBy100(array){
+    function multiply(array,val){
         for(var i=0;i<array.length;i++){
-            array*=100;
+            array*=val;
         }
         return array;
     }
