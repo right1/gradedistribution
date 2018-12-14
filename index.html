@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="https://puu.sh/BHK17/ffefb78022.png">
+
+  <title>Grade distribution calculator</title>
+  <!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/"> -->
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css"
+    rel="stylesheet">
+  <style>
+    .column {
+      width: 50%
+    }
+
+    .column3 {
+      width: 33%
+    }
+  </style>
+
+</head>
+
+<body>
+
+  
+  <div class="container">
+      <h1>Grade distribution calculator </h1>
+    <div class="row">
+      <div class="column">
+        <p>Enter grade weights here:</p>
+      </div>
+      <div class="column">
+        <input type="text" class="form-control" placeholder="Grade weights (from 0-1), separate with comma" id="gradeWeights"
+          type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <p>Enter grade medians (or means) here:</p>
+      </div>
+      <div class="column">
+        <input type="text" class="form-control" placeholder="Grade medians (number value only, out of 100), separate with comma"
+          id="gradeMedians" type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <p>Enter grade std deviations here:</p>
+      </div>
+      <div class="column">
+        <input type="text" class="form-control" placeholder="Grade standard deviations, separate with comma" id="gradeStDev"
+          type="text">
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" id="goBtn">Go</button>
+      <div style="display:inline-block;width:2vw"></div>
+      <btn class="btn btn-warning" data-toggle="modal" data-target="#options">Change grade thresholds</btn>
+    </div>
+    <div id="barCharContainer">
+        <canvas id="barChart" style="width:100vw;height:65vh"></canvas>
+    </div>
+    <div id="gaussianContainer">
+      <div id="gaussianChart" style="width:100vw;height:65vh"></div>
+    </div>
+    <div class="modal" id="options" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Grade Thresholds</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive A+
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for A+" id="grade0" type="number"
+                  value="97"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive A
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for A" id="grade1" type="number"
+                  value="93"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive A-
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for A-" id="grade2" type="number"
+                  value="90"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive B+
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for B+" id="grade3" type="number"
+                  value="87"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive B
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for B" id="grade4" type="number"
+                  value="83"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive B-
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for B-" id="grade5" type="number"
+                  value="80"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive C+
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for C+" id="grade6" type="number"
+                  value="77"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive C
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for C" id="grade7" type="number"
+                  value="73"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive C-
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for C-" id="grade8" type="number"
+                  value="70"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive D+
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for D+" id="grade9" type="number"
+                  value="67"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive D
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for D" id="grade10" type="number"
+                  value="63"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive D-
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for D-" id="grade11" type="number"
+                  value="60"></div>
+            </div>
+            <div class="row">
+              <div class="column">
+                <span data-toggle="tooltip" data-placement="right">
+                  Min Grade to receive E
+                  <div style="display:inline-block;width:3%"></div>
+                </span>
+              </div>
+              <div class="column"><input type="number" class="form-control" placeholder="grade for E" id="grade12" type="number"
+                  value="0"></div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Bootstrap core JavaScript
+    ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+          crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+          crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/maps/modules/histogram-bellcurve.js"></script>
+        <script src="js/Chart.min.js"></script>
+        <script src="js/app.js"></script>
+</body>
+
+</html>
