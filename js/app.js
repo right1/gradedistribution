@@ -103,7 +103,7 @@ $(function () {
             percentiles[i] = .5 * (1 + erf(zScores[i] * ONE_OVER_ROOT_TWO, 50));
             if (percentiles[i] < 0 || percentiles[i] > 100) percentiles[i] = 0;
         }
-        percentiles=multiply(percentiles);
+        percentiles=multiply(percentiles,100);
         // console.log('z');
         // console.log(zScores);
         // console.log('percentiles');
@@ -112,7 +112,7 @@ $(function () {
     }
     function multiply(array,val){
         for(var i=0;i<array.length;i++){
-            array*=val;
+            array[i]=1.0*array[i]*val;
         }
         return array;
     }
@@ -126,7 +126,7 @@ $(function () {
         for (var i = 1; i < percentiles.length - 1; i++) {
             percentiles[i] -= percentiles[i + 1];
         }
-        percentiles[0] = 1 - percentiles[0];
+        percentiles[0] = 100 - percentiles[0];
         return percentiles;
     }
     function erf(x, iterations) {
