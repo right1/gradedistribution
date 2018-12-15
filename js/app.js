@@ -69,6 +69,22 @@ $(function () {
     $('.select2').select2();
 
     $('#goBtn').click(function () {
+        begin();
+    });
+    $('#preset').change(function(){
+        var selected=$(this).children("option:selected").val();
+        if(selected!="null"){
+            $('#gradeWeights').val(PRESETS[selected].weights);
+            $('#gradeMedians').val(PRESETS[selected].medians);
+            $('#gradeStDev').val(PRESETS[selected].stdev);
+            begin();
+        }else{
+            $('#gradeWeights').val("");
+            $('#gradeMedians').val("");
+            $('#gradeStDev').val("");
+        }
+    });
+    function begin(){
         var gradeWeights = trimWhitespace($('#gradeWeights').val().split(','));
         var gradeMedians = trimWhitespace($('#gradeMedians').val().split(','));
         var gradeStDev = trimWhitespace($('#gradeStDev').val().split(','));
@@ -84,19 +100,7 @@ $(function () {
             gradeStDev = strToFloat(gradeStDev);
             updateDistribution(gradeWeights, gradeMedians, gradeStDev);
         }
-    });
-    $('#preset').change(function(){
-        var selected=$(this).children("option:selected").val();
-        if(selected!="null"){
-            $('#gradeWeights').val(PRESETS[selected].weights);
-            $('#gradeMedians').val(PRESETS[selected].medians);
-            $('#gradeStDev').val(PRESETS[selected].stdev);
-        }else{
-            $('#gradeWeights').val("");
-            $('#gradeMedians').val("");
-            $('#gradeStDev').val("");
-        }
-    })
+    }
     function populatePresetDropdown(){
         var select=document.getElementById("preset");
         $.each(PRESETS,function(key,value){
@@ -114,8 +118,10 @@ $(function () {
             total_median += gradeWeights[i] * gradeMedians[i];
         }
         total_stdev = Math.sqrt(total_stdev);
-        console.log("median: " + total_median);
-        console.log("total_stdev: " + total_stdev);
+        $('#total_avg').text(total_median.toFixed(3));
+        $('#total_stdev').text(total_stdev.toFixed(3));
+        // console.log("median: " + total_median);
+        // console.log("total_stdev: " + total_stdev);
         calculateValues(total_median, total_stdev);
     }
     function checkGreaterThanOne(gradeWeights){
@@ -140,10 +146,6 @@ $(function () {
             if (percentiles[i] < 0 || percentiles[i] > 100) percentiles[i] = 0;
         }
         percentiles=multiply(percentiles,100);
-        // console.log('z');
-        // console.log(zScores);
-        // console.log('percentiles');
-        // console.log(percentiles);
         updateGraph(percentiles);
     }
     function multiply(array,val){
@@ -152,18 +154,24 @@ $(function () {
         }
         return array;
     }
+    function toFixed_array(array,precision){
+        for(var i=0;i<array.length;i++){
+            if(precision)array[i]=array[i].toFixed(precision);
+        }
+        return array;
+    }
     function updateGraph(percentiles) {
         var barValues = getBarValues(percentiles);
-        // console.log(barChart.data.datasets);
-        barChart.data.datasets[0].data=barValues;
+        barChart.data.datasets[0].data=toFixed_array(barValues,6);
         barChart.update();
     }
     function getBarValues(percentiles) {
-        for (var i = 1; i < percentiles.length - 1; i++) {
-            percentiles[i] -= percentiles[i + 1];
+        var newPercentiles=[];
+        for (var i = 1; i < percentiles.length; i++) {
+            newPercentiles[i]=percentiles[i-1] - percentiles[i];
         }
-        percentiles[0] = 100 - percentiles[0];
-        return percentiles;
+        newPercentiles[0] = 100 - percentiles[0];
+        return newPercentiles;
     }
     function erf(x, iterations) {
         var m = 1.00;
