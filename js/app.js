@@ -122,7 +122,22 @@ $(function () {
         $('#total_stdev').text(total_stdev.toFixed(3));
         // console.log("median: " + total_median);
         // console.log("total_stdev: " + total_stdev);
-        calculateValues(total_median, total_stdev);
+        var normalized=normalizeByWeight(total_median,total_stdev,gradeWeights);
+        calculateValues(normalized['median'], normalized['stdev']);
+    }
+    function normalizeByWeight(median,stdev,weights){
+        var totalWeight=0;
+        for(var i=0;i<weights.length;i++){
+            totalWeight+=weights[i];
+        }
+        
+        var conversionFactor=1.0/totalWeight;
+        median*=conversionFactor;
+        stdev*=conversionFactor;
+        return {
+            "median": median,
+            "stdev": stdev
+        }
     }
     function checkGreaterThanOne(gradeWeights){
         for(var i=0;i<gradeWeights.length;i++){
@@ -143,7 +158,8 @@ $(function () {
         const ONE_OVER_ROOT_TWO = Math.sqrt(.5);
         for (var i = 0; i < zScores.length; i++) {
             percentiles[i] = .5 * (1 + erf(zScores[i] * ONE_OVER_ROOT_TWO, 50));
-            if (percentiles[i] < 0 || percentiles[i] > 100) percentiles[i] = 0;
+            if (percentiles[i] < 0) percentiles[i] = 0;
+            else if(percentiles[i]>1)percentiles[i]=1;
         }
         percentiles=multiply(percentiles,100);
         updateGraph(percentiles);
@@ -166,11 +182,13 @@ $(function () {
         barChart.update();
     }
     function getBarValues(percentiles) {
+        console.log(percentiles);
         var newPercentiles=[];
         for (var i = 1; i < percentiles.length; i++) {
             newPercentiles[i]=percentiles[i-1] - percentiles[i];
         }
         newPercentiles[0] = 100 - percentiles[0];
+        console.log(newPercentiles);
         return newPercentiles;
     }
     function erf(x, iterations) {
