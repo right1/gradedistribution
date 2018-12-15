@@ -12,6 +12,7 @@
 
   <!-- Bootstrap core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
   <style>
     .column {
       width: 50%
@@ -60,7 +61,12 @@
       <button class="btn btn-primary" id="goBtn">Go</button>
       <div style="display:inline-block;width:2vw"></div>
       <btn class="btn btn-warning" data-toggle="modal" data-target="#options">Change grade thresholds</btn>
+      <div style="display:inline-block;width:2vw"></div>
+      <select class="select2" id="preset" name="preset">
+        <option value="null">Select a Preset</option>
+      </select>
     </div>
+
     <div id="barCharContainer">
         <canvas id="barChart" style="width:100vw;height:65vh"></canvas>
     </div>
@@ -215,6 +221,7 @@
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
           crossorigin="anonymous"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
         <script src="js/Chart.min.js"></script>
         <script src="js/app.js"></script>
 </body>

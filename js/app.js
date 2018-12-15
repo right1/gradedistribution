@@ -2,6 +2,18 @@
 $(function () {
     var gradeThresholds = [97, 93, 90, 87, 83, 80, 77, 73, 70, 67, 63, 60, 0];
     const gradeNames = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E'];
+    const PRESETS={
+        "EECS280_FS18_mean":{
+            weights:"4,9,9,25,9,9,1,5,29",
+            medians:"85,88.53,81.09,74,91.63,87.1,95,95,74",
+            stdev:"19,16.91,21.94,15,15.18,17.28,3,3,15"
+        },
+        "EECS280_FS18_median":{
+            weights:"4,9,9,25,9,9,1,5,29",
+            medians:"89,94.66,90,76.5,96.03,94,95,95,76.5",
+            stdev:"19,16.91,21.94,15,15.18,17.28,3,3,15"
+        }
+    }
     var barChartContext = document.getElementById("barChart").getContext('2d');
     var barChart = new Chart(barChartContext, {
         type: 'bar',
@@ -53,6 +65,9 @@ $(function () {
             }
         }
     });
+    populatePresetDropdown();
+    $('.select2').select2();
+
     $('#goBtn').click(function () {
         var gradeWeights = trimWhitespace($('#gradeWeights').val().split(','));
         var gradeMedians = trimWhitespace($('#gradeMedians').val().split(','));
@@ -70,6 +85,27 @@ $(function () {
             updateDistribution(gradeWeights, gradeMedians, gradeStDev);
         }
     });
+    $('#preset').change(function(){
+        var selected=$(this).children("option:selected").val();
+        if(selected!="null"){
+            $('#gradeWeights').val(PRESETS[selected].weights);
+            $('#gradeMedians').val(PRESETS[selected].medians);
+            $('#gradeStDev').val(PRESETS[selected].stdev);
+        }else{
+            $('#gradeWeights').val("");
+            $('#gradeMedians').val("");
+            $('#gradeStDev').val("");
+        }
+    })
+    function populatePresetDropdown(){
+        var select=document.getElementById("preset");
+        $.each(PRESETS,function(key,value){
+            var option=document.createElement("option");
+            option.value=key;
+            option.text=key;
+            select.add(option);
+        });
+    }
     function updateDistribution(gradeWeights, gradeMedians, gradeStDev) {
         var total_stdev = 0;
         var total_median = 0;
